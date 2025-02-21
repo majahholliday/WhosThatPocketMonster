@@ -1,6 +1,7 @@
 package com.example.whosthatpocketmonster
 
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
@@ -10,6 +11,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var monsterImage: ImageView
     private lateinit var answerGroup: RadioGroup
     private lateinit var submitButton: Button
+    private lateinit var nextButton: Button
     private lateinit var scoreText: TextView
 
     private val monsters = listOf(
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         monsterImage = findViewById(R.id.monsterImage)
         answerGroup = findViewById(R.id.answerGroup)
         submitButton = findViewById(R.id.submitButton)
+        nextButton = findViewById(R.id.nextButton)
         scoreText = findViewById(R.id.scoreText)
 
         loadNewMonster()
@@ -34,12 +37,21 @@ class MainActivity : AppCompatActivity() {
         submitButton.setOnClickListener {
             checkAnswer()
         }
+
+        nextButton.setOnClickListener {
+            loadNewMonster() // Load next question
+            submitButton.visibility = View.VISIBLE
+            nextButton.visibility = View.GONE
+
+        }
     }
 
     private fun loadNewMonster() {
         // Pick a random monster
         currentMonster = monsters.random()
         val silhouetteResId = resources.getIdentifier("${currentMonster}_silhouette", "drawable", packageName)
+        //val pokemonResId = resources.getIdentifier("${currentVisibleMonster}_pokemon", "drawable", packageName)
+
 
         if (silhouetteResId != 0) {
             monsterImage.setImageResource(silhouetteResId)
@@ -68,11 +80,17 @@ class MainActivity : AppCompatActivity() {
         if (selectedButton.text == currentMonster) {
             score++
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show()
+            submitButton.visibility = View.GONE
+            nextButton.visibility = View.VISIBLE
+            //here ig set the image to being visible
         } else {
             Toast.makeText(this, "Wrong! It was $currentMonster", Toast.LENGTH_SHORT).show()
+            submitButton.visibility = View.GONE
+            nextButton.visibility = View.VISIBLE
+            //here too
         }
 
         scoreText.text = "Score: $score"
-        loadNewMonster() // Load next question
+
     }
 }
